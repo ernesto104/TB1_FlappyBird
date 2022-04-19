@@ -10,7 +10,7 @@ def createPipe(window_height, window_width,game_images):
       
     # generating random height of pipes
     y2 = offset + random.randrange(
-      0, int(window_height - game_images['sea_level'].get_height() - 1.2 * offset))  
+      60, int(window_height - game_images['sea_level'].get_height() - 1.2 * offset))  
     pipeX = window_width + 10
     y1 = pipeHeight - y2 + offset
     pipe = [
@@ -50,10 +50,10 @@ def isGameOver(horizontal, vertical, up_pipes, down_pipes, elevation, game_image
 
 
 	#Parte 6
-def flappygame(window_width, game_images, elevation, window, framepersecond, framepersecond_clock, window_height):
+def flappygame(window_width, game_images, elevation, window, framepersecond, framepersecond_clock, window_height,asumpciones):
 	your_score = 0
 	horizontal = int(window_width/5)
-	vertical = int(window_width/2)
+	vertical = int(window_height/2)
 	ground = 0
 	mytempheight = 100
 
@@ -63,21 +63,21 @@ def flappygame(window_width, game_images, elevation, window, framepersecond, fra
 
 	# List containing lower pipes
 	down_pipes = [
-		{'x': window_width+300-mytempheight,
+		{'x': window_width+300,
 		'y': first_pipe[1]['y']},
-		{'x': window_width+300-mytempheight+(window_width/2),
+		{'x': window_width+300+(window_width/2),
 		'y': second_pipe[1]['y']},
 	]
 
 	# List Containing upper pipes
 	up_pipes = [
-		{'x': window_width+300-mytempheight,
+		{'x': window_width+300,
 		'y': first_pipe[0]['y']},
-		{'x': window_width+200-mytempheight+(window_width/2),
+		{'x': window_width+300+(window_width/2),
 		'y': second_pipe[0]['y']},
 	]
 
-	pipeVelX = -4 #pipe velocity along x
+	pipeVelX = 4 #pipe velocity along x
 
 	bird_velocity_y = -9 # bird velocity
 	bird_Max_Vel_Y = 10
@@ -90,21 +90,24 @@ def flappygame(window_width, game_images, elevation, window, framepersecond, fra
 	# It is true only when the bird is flapping
 	bird_flapped = False
 	while True:
-		
 		# Handling the key pressing events
 		for event in pygame.event.get():
 			if event.type == QUIT or (event.type == KEYDOWN and event.key == K_ESCAPE):
 				pygame.quit()
 				sys.exit()
-			if event.type == KEYDOWN and (event.key == K_SPACE or event.key == K_UP):
+			
+			if ((event.type == KEYDOWN and (event.key == K_SPACE or event.key == K_UP))):
 				if vertical > 0:
 					bird_velocity_y = bird_flap_velocity
 					bird_flapped = True
-
+		
+		if (vertical>up_pipes[0]['y']+ game_images['pipeimage'][0].get_height()+asumpciones[0] and vertical>asumpciones[1]+down_pipes[0]['y']):
+			bird_velocity_y = bird_flap_velocity
+			bird_flapped = True
 		# This function will return true if the flappybird is crashed
 		game_over = isGameOver(horizontal, vertical, up_pipes, down_pipes, elevation, game_images)
 		if game_over:
-			return
+			return your_score
 
 		# check for your_score
 		playerMidPos = horizontal + game_images['flappybird'].get_width()/2
@@ -113,7 +116,6 @@ def flappygame(window_width, game_images, elevation, window, framepersecond, fra
 			if pipeMidPos <= playerMidPos < pipeMidPos + 4:
 				# Printing the score
 				your_score += 1
-				print(f"Your your_score is {your_score}")
 
 		if bird_velocity_y < bird_Max_Vel_Y and not bird_flapped:
 			bird_velocity_y += birdAccY
@@ -125,18 +127,15 @@ def flappygame(window_width, game_images, elevation, window, framepersecond, fra
 
 		# move pipes to the left
 		for upperPipe, lowerPipe in zip(up_pipes, down_pipes):
-			upperPipe['x'] += pipeVelX
-			lowerPipe['x'] += pipeVelX
+			upperPipe['x'] -= pipeVelX
+			lowerPipe['x'] -= pipeVelX
 
 		# Add a new pipe when the first is about
 		# to cross the leftmost part of the screen
-		if 0 < up_pipes[0]['x'] < 5:
+		if 0 < up_pipes[0]['x'] < 30:
 			newpipe = createPipe(window_height, window_width,game_images)
 			up_pipes.append(newpipe[0])
 			down_pipes.append(newpipe[1])
-
-		# if the pipe is out of the screen, remove it
-		if up_pipes[0]['x'] < -game_images['pipeimage'][0].get_width():
 			up_pipes.pop(0)
 			down_pipes.pop(0)
 
