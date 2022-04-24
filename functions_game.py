@@ -60,21 +60,26 @@ def flappygame(window_width, game_images, elevation, window, framepersecond, fra
 	# Generating two pipes for blitting on window
 	first_pipe = createPipe(window_height,window_width, game_images)
 	second_pipe = createPipe(window_height, window_width, game_images)
+	third_pipe = createPipe(window_height, window_width, game_images)
 
 	# List containing lower pipes
 	down_pipes = [
 		{'x': window_width+300,
 		'y': first_pipe[1]['y']},
-		{'x': window_width+300+(window_width/2),
+		{'x': window_width+300+(window_width/3),
 		'y': second_pipe[1]['y']},
+		{'x': window_width+300+(window_width/3)*2,
+		'y': third_pipe[1]['y']},
 	]
 
 	# List Containing upper pipes
 	up_pipes = [
 		{'x': window_width+300,
 		'y': first_pipe[0]['y']},
-		{'x': window_width+300+(window_width/2),
+		{'x': window_width+300+(window_width/3),
 		'y': second_pipe[0]['y']},
+		{'x': window_width+300+(window_width/3)*2,
+		'y': third_pipe[0]['y']},
 	]
 
 	pipeVelX = 4 #pipe velocity along x

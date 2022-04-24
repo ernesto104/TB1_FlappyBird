@@ -99,7 +99,7 @@ if __name__ == "__main__":
 
 #Parte 3
 # iniciamos valores adivinados
-asumimos=[0,0]
+asumimos=[30,-30]
 energia=0
 
 while True:
